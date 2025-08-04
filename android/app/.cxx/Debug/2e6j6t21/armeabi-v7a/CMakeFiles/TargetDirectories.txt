@@ -1,0 +1,2 @@
+/home/r2/Documents/playground/flutter/quran_a_day/android/app/.cxx/Debug/2e6j6t21/armeabi-v7a/CMakeFiles/edit_cache.dir
+/home/r2/Documents/playground/flutter/quran_a_day/android/app/.cxx/Debug/2e6j6t21/armeabi-v7a/CMakeFiles/rebuild_cache.dir
