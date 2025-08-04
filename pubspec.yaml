@@ -13,7 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.6
-  flutter_hooks: ^0.20.5
+  flutter_hooks: ^0.21.2
   flutter_islamic_icons: ^1.0.2
   flutter_localizations:
     sdk: flutter
