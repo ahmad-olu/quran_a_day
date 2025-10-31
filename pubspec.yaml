@@ -8,11 +8,11 @@ environment:
 
 dependencies:
   al_quran: ^0.1.1+5
-  bloc: ^8.1.4
+  bloc: ^9.0.0
   day_night_switcher: ^0.2.0+1
   flutter:
     sdk: flutter
-  flutter_bloc: ^8.1.6
+  flutter_bloc: ^9.1.1
   flutter_hooks: ^0.20.5
   flutter_islamic_icons: ^1.0.2
   flutter_localizations:
@@ -28,7 +28,7 @@ dependencies:
   timings_of_deen: ^0.0.1
 
 dev_dependencies:
-  bloc_test: ^9.1.7
+  bloc_test: ^10.0.0
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: ^0.14.1
