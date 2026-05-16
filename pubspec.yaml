@@ -44,6 +44,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: ^0.14.1
+  hive_ce_generator: ^1.9.3
   mocktail: ^1.0.4
   very_good_analysis: ^6.0.0
 
