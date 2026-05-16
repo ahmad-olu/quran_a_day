@@ -1,12 +1,17 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 import 'package:gap/gap.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:quran_a_day/app/theme.dart';
 import 'package:quran_a_day/app/view/get_q_uran_page.dart';
+import 'package:quran_a_day/data/audio/quran_audio_repository.dart';
+import 'package:quran_a_day/data/bookmarks/bookmark_repository.dart';
 import 'package:quran_a_day/l10n/arb/app_localizations.dart';
+import 'package:quran_a_day/state/audio_cubit/audio_cubit.dart';
+import 'package:quran_a_day/state/bookmark_cubit/bookmark_cubit.dart';
 
 import 'package:responsive_builder/responsive_builder.dart';
 
@@ -15,13 +20,23 @@ class App extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: FlexThemeData.light(scheme: FlexScheme.mandyRed),
-      darkTheme: FlexThemeData.dark(scheme: FlexScheme.mandyRed),
-      //        themeMode: ThemeMode.dark,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: const HomePage(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => BookmarkCubit(repository: BookmarkRepository()),
+        ),
+        BlocProvider(
+          create: (_) => AudioCubit(repository: QuranAudioRepository()),
+        ),
+      ],
+      child: MaterialApp(
+        theme: FlexThemeData.light(scheme: FlexScheme.mandyRed),
+        darkTheme: FlexThemeData.dark(scheme: FlexScheme.mandyRed),
+        //        themeMode: ThemeMode.dark,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const HomePage(),
+      ),
     );
   }
 }
