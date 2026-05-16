@@ -1,5 +1,5 @@
 # Quran A Day
- 
+
 `flutter run --flavor production --target lib/main_production.dart`
 `flutter build appbundle --flavor production --target lib/main_production.dart`
-stored in `../project/griiled/build/app/outputs/bundle/productionRelease`
+stored in `../project/griiled/build/app/outputs/bundle/productionRelease`h

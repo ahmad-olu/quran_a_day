@@ -62,46 +62,39 @@ class RandomPageCubit extends Cubit<RandomPageState> {
   }
 
   Future<void> _loadPage(int pageNumber) async {
-    // Save as last read
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_lastPageKey, pageNumber);
 
     final pageData = quran.getPageData(pageNumber);
 
-    // Get unique surah numbers to avoid duplicate fetches
-    final uniqueSurahs = <int>{};
-    for (final e in pageData) {
-      final data = e as Map<String, int>;
-      uniqueSurahs.add(data['surah']!);
-    }
+    // FIXED: cast to Map<String, dynamic> not Map<String, int>
+    final segments = pageData.map((e) {
+      final data = e as Map<String, dynamic>;
+      return (
+        data['surah']! as int,
+        data['start']! as int,
+        data['end']! as int
+      );
+    }).toList();
 
-    // Fetch all unique surahs in parallel (not sequentially!)
-    await Future.wait(
-      uniqueSurahs.map((s) => _getCachedSurah(s)),
-    );
+    final uniqueSurahs = segments.map((s) => s.$1).toSet();
 
-    // Fetch surah name list once
+    await Future.wait(uniqueSurahs.map(_getCachedSurah));
+
     final surahList = await getSurahList();
 
-    // Build ayah groups
     final ayahs = <(List<Aya>, String, String)>[];
-    for (final e in pageData) {
-      final data = e as Map<String, int>;
-      final surahNum = data['surah']!;
-      final start = data['start']!;
-      final end = data['end']!;
-
-      final surahContent = _surahCache[surahNum]!;
-      final ayahSlice = surahContent.aya!.getRange(start - 1, end).toList();
-
-      final surahInfo = surahList[surahNum];
-      ayahs.add((
-        ayahSlice,
-        surahInfo.nameArabic ?? '',
-        surahInfo.nameLatin ?? '',
-      ));
+    for (final seg in segments) {
+      final surahContent = _surahCache[seg.$1]!;
+      final slice = surahContent.aya!.getRange(seg.$2 - 1, seg.$3).toList();
+      final info = surahList[seg.$1];
+      ayahs.add((slice, info.nameArabic ?? '', info.nameLatin ?? ''));
     }
 
-    emit(RandomPageLoaded(pageNumber: pageNumber, ayahs: ayahs));
+    emit(RandomPageLoaded(
+      pageNumber: pageNumber,
+      ayahs: ayahs,
+      segments: segments,
+    ));
   }
 }

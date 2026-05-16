@@ -35,7 +35,14 @@ class DailyAyahCubit extends Cubit<DailyAyahState> {
 
   Future<void> enable() async {
     try {
-      await NotificationService.instance.init();
+      // Permission request here — UI is definitely mounted by now
+      final granted = await NotificationService.instance.requestPermissions();
+      if (!granted) {
+        emit(const DailyAyahError(
+          message: 'Notification permission denied',
+        ));
+        return;
+      }
       await DailyAyahScheduler.instance.scheduleDailyAyah();
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(_enabledKey, true);

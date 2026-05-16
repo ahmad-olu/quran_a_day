@@ -19,10 +19,12 @@ final class RandomPageLoaded extends RandomPageState {
   const RandomPageLoaded({
     required this.pageNumber,
     required this.ayahs,
+    required this.segments, // ← add this
   });
 
   final int pageNumber;
   final List<(List<Aya>, String, String)> ayahs;
+  final List<(int, int, int)> segments; // (surahNum, startAyah, endAyah)
 }
 
 final class RandomPageError extends RandomPageState {

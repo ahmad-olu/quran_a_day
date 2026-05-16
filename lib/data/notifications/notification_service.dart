@@ -27,6 +27,60 @@ class NotificationService {
   /// Callback set by main.dart — called when user taps a notification
   void Function(String? payload)? onNotificationTap;
 
+  // Future<void> init({
+  //   void Function(String? payload)? onTap,
+  // }) async {
+  //   if (!isSupported) return;
+  //   if (_initialised) return;
+
+  //   onNotificationTap = onTap;
+
+  //   // Platform-specific init settings
+  //   const androidSettings =
+  //       AndroidInitializationSettings('@mipmap/ic_launcher');
+
+  //   // Linux settings — uses system notification icon name
+  //   final linuxSettings = LinuxInitializationSettings(
+  //     defaultActionName: 'Open',
+  //     defaultIcon: AssetsLinuxIcon('assets/icon/icon.png'),
+  //   );
+
+  //   const darwinSettings = DarwinInitializationSettings(
+  //     requestAlertPermission: true,
+  //     requestBadgePermission: true,
+  //     requestSoundPermission: true,
+  //   );
+
+  //   // windows uses default settings
+  //   const windowsSettings = WindowsInitializationSettings(
+  //     appName: 'Quran a Day',
+  //     appUserModelId: 'com.yourname.quran_a_day',
+  //     guid: 'a8b4c2d1-e5f6-7890-abcd-ef1234567890', // generate your own
+  //   );
+
+  //   final initSettings = InitializationSettings(
+  //     android: androidSettings,
+  //     iOS: darwinSettings,
+  //     macOS: darwinSettings,
+  //     linux: linuxSettings,
+  //     windows: windowsSettings,
+  //   );
+
+  //   await _plugin.initialize(
+  //     settings: initSettings,
+  //     onDidReceiveNotificationResponse: (details) {
+  //       onNotificationTap?.call(details.payload);
+  //     },
+  //   );
+
+  //   // Request permissions per platform
+  //   await _requestPermissions();
+
+  //   _initialised = true;
+  // }
+
+  // notification_service.dart — split init into two phases
+
   Future<void> init({
     void Function(String? payload)? onTap,
   }) async {
@@ -35,27 +89,24 @@ class NotificationService {
 
     onNotificationTap = onTap;
 
-    // Platform-specific init settings
     const androidSettings =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    // Linux settings — uses system notification icon name
     final linuxSettings = LinuxInitializationSettings(
       defaultActionName: 'Open',
       defaultIcon: AssetsLinuxIcon('assets/icon/icon.png'),
     );
 
     const darwinSettings = DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
+      requestAlertPermission: false, // ← don't auto-request on init
+      requestBadgePermission: false,
+      requestSoundPermission: false,
     );
 
-    // windows uses default settings
     const windowsSettings = WindowsInitializationSettings(
       appName: 'Quran a Day',
       appUserModelId: 'com.yourname.quran_a_day',
-      guid: 'a8b4c2d1-e5f6-7890-abcd-ef1234567890', // generate your own
+      guid: 'a8b4c2d1-e5f6-7890-abcd-ef1234567890',
     );
 
     final initSettings = InitializationSettings(
@@ -73,10 +124,36 @@ class NotificationService {
       },
     );
 
-    // Request permissions per platform
-    await _requestPermissions();
-
+    // ← Do NOT call _requestPermissions() here
     _initialised = true;
+  }
+
+  /// Call this separately AFTER the app UI is mounted —
+  /// i.e. from DailyAyahCubit.enable() when user explicitly turns on notifications
+  Future<bool> requestPermissions() async {
+    if (!isSupported) return true;
+
+    if (UniversalPlatform.isAndroid) {
+      final android = _plugin.resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>();
+      // requestNotificationsPermission returns bool? in newer versions
+      final granted = await android?.requestNotificationsPermission();
+      return granted ?? false;
+    }
+
+    if (UniversalPlatform.isIOS || UniversalPlatform.isMacOS) {
+      final darwin = _plugin.resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin>();
+      final granted = await darwin?.requestPermissions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+      return granted ?? false;
+    }
+
+    // Linux / Windows — no permission needed
+    return true;
   }
 
   Future<void> _requestPermissions() async {

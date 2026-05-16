@@ -36,18 +36,18 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   await Hive.initFlutter(); // uses path_provider under the hood
   await BookmarkRepository.init();
 
-  // Notifications — init here so launch payload is available
-  await NotificationService.instance.init(
-    onTap: (payload) {
-      // Handle navigation from notification tap
-      // We'll wire this to a GlobalKey<NavigatorState> in Step 6
-      final parsed = NotificationPayload.fromPayloadString(payload);
-      if (parsed != null) {
-        debugPrint('Tapped notification for page ${parsed.pageNumber}');
-        // navigatorKey.currentState?.push(...) — Step 6
-      }
-    },
-  );
+  // // Notifications — init here so launch payload is available
+  // await NotificationService.instance.init(
+  //   onTap: (payload) {
+  //     // Handle navigation from notification tap
+  //     // We'll wire this to a GlobalKey<NavigatorState> in Step 6
+  //     final parsed = NotificationPayload.fromPayloadString(payload);
+  //     if (parsed != null) {
+  //       debugPrint('Tapped notification for page ${parsed.pageNumber}');
+  //       // navigatorKey.currentState?.push(...) — Step 6
+  //     }
+  //   },
+  // );
 
   // Add cross-flavor configuration here
 
