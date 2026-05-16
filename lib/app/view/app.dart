@@ -12,6 +12,7 @@ import 'package:quran_a_day/data/bookmarks/bookmark_repository.dart';
 import 'package:quran_a_day/l10n/arb/app_localizations.dart';
 import 'package:quran_a_day/state/audio_cubit/audio_cubit.dart';
 import 'package:quran_a_day/state/bookmark_cubit/bookmark_cubit.dart';
+import 'package:quran_a_day/state/daily_ayah_cubit/daily_ayah_cubit.dart';
 
 import 'package:responsive_builder/responsive_builder.dart';
 
@@ -27,6 +28,9 @@ class App extends HookWidget {
         ),
         BlocProvider(
           create: (_) => AudioCubit(repository: QuranAudioRepository()),
+        ),
+        BlocProvider(
+          create: (_) => DailyAyahCubit()..init(),
         ),
       ],
       child: MaterialApp(
