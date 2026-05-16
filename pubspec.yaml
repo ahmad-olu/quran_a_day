@@ -1,6 +1,6 @@
 name: quran_a_day
 description: Quran a day app
-version: 3.0.0+3
+version: 3.0.3+6
 publish_to: none
 
 environment:
@@ -26,6 +26,18 @@ dependencies:
   responsive_builder: ^0.7.1
   flex_color_scheme: ^8.1.1
   timings_of_deen: ^0.0.1
+  hive_ce: ^2.19.3
+  hive_ce_flutter: ^2.3.4
+  flutter_local_notifications: ^20.1.0
+  adhan: ^2.0.0+1
+  geolocator: ^14.0.2
+  shared_preferences: ^2.5.5
+  cached_network_image: ^3.4.1
+  google_fonts: ^8.1.0
+  workmanager: ^0.9.0+3
+  just_audio_background: ^0.0.1-beta.17
+  audio_service: ^0.18.18
+  just_audio: ^0.10.5
 
 dev_dependencies:
   bloc_test: ^9.1.7
